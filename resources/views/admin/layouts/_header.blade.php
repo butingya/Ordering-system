@@ -37,7 +37,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">恭喜 {{\Illuminate\Support\Facades\Auth::guard("admin")->user()->name}} 找到秘密宝藏<span class="caret"></span></a>
 
                         <ul class="dropdown-menu">
-                            <li><a href="">修改密码</a></li>
+                            <li><a href="{{route('admin.admin.pwd',\Illuminate\Support\Facades\Auth::guard('admin')->user()->id)}}">修改密码</a></li>
                             <li role="separator" class="divider"></li>
                             <li><a href="{{route("admin.admin.logout")}}">注销</a></li>
 

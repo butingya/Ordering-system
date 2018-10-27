@@ -5,15 +5,15 @@
 @section("content")
 
     <style type="text/css">
-        span{
-            font-size: 20px;
-            font-family: 华文楷体;
-        }
-        a span{
-            font-size: 27px;
-            border-radius: 10%;
-            font-family: 楷体;
-        }
+        /*span{*/
+            /*font-size: 20px;*/
+            /*font-family: 华文楷体;*/
+        /*}*/
+        /*a span{*/
+            /*font-size: 27px;*/
+            /*border-radius: 10%;*/
+            /*font-family: 楷体;*/
+        /*}*/
     </style>
 
 

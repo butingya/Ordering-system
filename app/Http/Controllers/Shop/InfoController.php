@@ -12,9 +12,9 @@ class InfoController extends BaseController
 {
     //商铺添加
       public function info(Request $request){
-          if (Auth::user()->info) {
-              return back()->with("danger","你已经有店铺了");
-          }
+//          if (Auth::user()->info) {
+//              return back()->with("danger","你已经有店铺了");
+//          }
 
 
           //判断post提交
@@ -37,7 +37,6 @@ class InfoController extends BaseController
               //跳转视图
                 session()->flash('success', '申请成功等待平台管理员审核');
                 return redirect()->route("shop.user.home_page");
-//              session()->flash('success', '申请成功等待平台管理员审核');
           }else{
               //显示视图
                 $results = ShopCategory::where("status",1)->get();

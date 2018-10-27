@@ -7,6 +7,7 @@ use App\Models\ShopCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class InfoController extends BaseController
 {
@@ -35,14 +36,24 @@ class InfoController extends BaseController
       }
 
    //删除店铺列表
-     public function del($id){
-        //通过id找到他
-        $info = Info::find($id);
-        $pic = $info['shop_img'];
-        //删除
-        if ($info->delete()) {
-            @unlink($pic);
-            return redirect()->route('admin.info.list')->with("success","删除成功");
-        }
-     }
+//     public function del($id){
+//        //通过id找到他
+//        $info = Info::find($id);
+//        $pic = $info['shop_img'];
+//        //删除
+//        if ($info->delete()) {
+//            @unlink($pic);
+//            return redirect()->route('admin.info.list')->with("success","删除成功");
+//        }
+//     }
+
+    public function del($id){
+        DB::transaction(function () use ($id) {
+            //删除店铺
+            $info = Info::where("user_id", $id)->delete();
+            //删除用户
+            $user = User::find($id)->delete();
+        });
+        return redirect()->route("admin.info.list")->with("success","删除成功");
+    }
 }

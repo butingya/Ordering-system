@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -49,5 +50,19 @@ class Handler extends ExceptionHandler
     public function render($request, Exception $exception)
     {
         return parent::render($request, $exception);
+    }
+
+
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        //return $request->expectsJson()
+        //            ? response()->json(['message' => $exception->getMessage()], 401)
+        //            : redirect()->guest(route('login'));
+        if ($request->expectsJson()) {
+            return response()->json(['message' => $exception->getMessage()], 401);
+        } else {
+            session()->flash("danger","你没有权限,请先登录");
+            return in_array('admin', $exception->guards()) ? redirect()->guest(route('admin.admin.login')) : redirect()->guest(route('shop.user.login'));
+        }
     }
 }
