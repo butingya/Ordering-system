@@ -20,7 +20,8 @@ class ShopCategoryController extends BaseController
             if ($request->isMethod("post")) {
                 //接收数据，数据入库，显示视图
                 $data = $request->post();
-                $data['img']=$request->file("img")->store("images","image");
+                //图片上传
+                $data['img']=$request->file("img")->store("images");
                 if (ShopCategory::create($data)) {
                     return redirect()->route("admin.category.index")->with("success","商铺分类添加成功");
                 }
@@ -34,11 +35,15 @@ class ShopCategoryController extends BaseController
     public function edit(Request $request,$id){
         //通过id找对象
         $shopcategory = ShopCategory::find($id);
+        $pic = $shopcategory['img'];
         //是不是post提交
         if ($request->isMethod("post")) {
+            //接收数据
             $data = $request->post();
+            //图片判断
             if($request->file("img")!==null){
-                $data['img']=$request->file("img")->store("images","image");
+                \Storage::delete($pic);
+                $data['img']=$request->file("img")->store("images");
             }else{
                 $data['img']=$shopcategory->img;
             }
@@ -59,7 +64,7 @@ class ShopCategoryController extends BaseController
         $pic = $shopcategory['img'];
         //删除
         if ($shopcategory->delete()) {
-            @unlink($pic);
+            \Storage::delete($pic);
             return redirect()->route('admin.category.index')->with("success","删除成功");
         }
     }

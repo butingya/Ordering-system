@@ -101,7 +101,6 @@ class AdminController extends BaseController
             }
         }
 
-
     //编辑管理员资料
     public function edit(Request $request,$id){
         //通过id找对象

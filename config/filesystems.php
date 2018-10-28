@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DRIVER', 'local'),
+    'default' => env('FILESYSTEM_DRIVER', 'oss'),
 
     /*
     |--------------------------------------------------------------------------
@@ -66,6 +66,14 @@ return [
             'secret' => env('AWS_SECRET_ACCESS_KEY'),
             'region' => env('AWS_DEFAULT_REGION'),
             'bucket' => env('AWS_BUCKET'),
+        ],
+
+        'oss' => [
+            'driver'        => 'oss',
+            'access_id'     => 'LTAIAcVIBW0IDIMN',//账号
+            'access_key'    => '43kiBQcTQFP7BdJuhr3Xjj0nUX4zBy',//密钥
+            'bucket'        => 'ordershop2018',//空间名称
+            'endpoint'      => 'oss-cn-hangzhou.aliyuncs.com', // OSS 外网节点或自定义外部域名
         ],
 
     ],

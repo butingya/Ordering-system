@@ -47,6 +47,11 @@ Route::domain("order.admin.com")->namespace("Admin")->group(function (){
     Route::any("user/edit{id}","UserController@edit")->name("admin.user.edit");
     Route::get("user/del{id}","UserController@del")->name("admin.user.del");
 
+    //活动
+    Route::get("activity/index","ActivityController@index")->name("admin.activity.index");
+    Route::any("activity/add","ActivityController@add")->name("admin.activity.add");
+    Route::any("activity/edit/{id}","ActivityController@edit")->name("admin.activity.edit");
+    Route::get("activity/del/{id}","ActivityController@del")->name("admin.activity.del");
 });
 
 //商家
@@ -66,6 +71,8 @@ Route::domain("order.shop.com")->namespace("Shop")->group(function (){
     Route::any("menu/add","MenuController@add")->name("shop.menu.add");
     Route::any("menu/edit/{id}","MenuController@edit")->name("shop.menu.edit");
     Route::get("menu/del/{id}","MenuController@del")->name("shop.menu.del");
+    //自动上传
+    Route::any("category/upload","MenuController@upload")->name("shop.category.upload");
     //菜品分类
     Route::get("category/index","MenuCategoryController@index")->name("shop.category.index");
     Route::any("category/add","MenuCategoryController@add")->name("shop.category.add");
@@ -73,4 +80,6 @@ Route::domain("order.shop.com")->namespace("Shop")->group(function (){
     Route::get("category/del/{id}","MenuCategoryController@del")->name("shop.category.del");
     //查看
     Route::any("category/look/{id}","MenuCategoryController@look")->name("shop.category.look");
+    //查看有效活动
+    Route::get("activity/index","ActivityController@index")->name("shop.activity.index");
 });

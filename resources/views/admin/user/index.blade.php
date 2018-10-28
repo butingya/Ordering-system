@@ -1,5 +1,5 @@
 @extends("admin.layouts.main")
-@section("title","商户列表")
+@section("title","商家列表")
 @section("content")
 
     <a href="{{route("admin.user.add")}}" class="btn btn-info">添加</a>
@@ -9,7 +9,7 @@
         <table class="table container">
             <tr>
                 <th>Id</th>
-                <th>商户姓名</th>
+                <th>商家姓名</th>
                 <th>商户邮箱</th>
                 <th>操作</th>
             </tr>

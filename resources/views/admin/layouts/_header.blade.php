@@ -8,26 +8,33 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="">浮生物语</a>
+            <a class="navbar-brand" href="">舌尖上的平台</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li><a href="">关于我们 <span class="sr-only">(current)</span></a></li>
-                <li><a href="">帮助</a></li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">人物 <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">店铺管理<span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                        <li><a href="#">裟椤</a></li>
+                        <li><a href="{{route("admin.info.list")}}">店铺申请列表</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="#">敖炽</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">九厥</a></li>
-                        <li role="separator" class="divider"></li>
-                        <li><a href="#">甲乙</a></li>
+                        <li><a href="{{route("admin.category.index")}}">店铺分类</a></li>
                     </ul>
                 </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">人员管理<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{route("admin.admin.index")}}">管理员管理</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{route("admin.user.index")}}">商家管理</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="">关于我们 <span class="sr-only">(current)</span></a></li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">

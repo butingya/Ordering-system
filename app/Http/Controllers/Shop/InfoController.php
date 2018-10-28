@@ -30,7 +30,7 @@ class InfoController extends BaseController
 
                 $data['user_id']=Auth::user()->id;
 //                dd($data);
-                $data['shop_img']=$request->file("shop_img")->store("images","image");
+                $data['shop_img']=$request->file("shop_img")->store("images");
 
 
                 Info::create($data);
