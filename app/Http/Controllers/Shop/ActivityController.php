@@ -6,7 +6,7 @@ use App\Models\Activity;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class ActivityController extends Controller
+class ActivityController extends BaseController
 {
     //显示有效活动
     public function index(){

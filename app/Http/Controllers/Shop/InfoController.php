@@ -12,9 +12,9 @@ class InfoController extends BaseController
 {
     //商铺添加
       public function info(Request $request){
-//          if (Auth::user()->info) {
-//              return back()->with("danger","你已经有店铺了");
-//          }
+          if (Auth::user()->info) {
+              return back()->with("danger","你已经有店铺了");
+          }
 
 
           //判断post提交
@@ -27,11 +27,21 @@ class InfoController extends BaseController
                 $data['bao']=$request->has('bao')?'1':'0';
                 $data['piao']=$request->has('piao')?'1':'0';
                 $data['zhun']=$request->has('zhun')?'1':'0';
+                //验证
+                $this->validate($request, [
+                  "shop_category_id" => "required",
+                  "shop_name" => "required|unique:infos",
+                  "shop_img" => "required",
+                  "notice" => "required",
+                  "discount" => "required",
+                  "status" => "required",
+                  "start_send" => "required",
+                  "send_cost" => "required",
+                ]);
 
+              //设置店铺的状态为0 未审核
+                $data['status'] = 0;
                 $data['user_id']=Auth::user()->id;
-//                dd($data);
-                $data['shop_img']=$request->file("shop_img")->store("images");
-
 
                 Info::create($data);
               //跳转视图
@@ -43,4 +53,22 @@ class InfoController extends BaseController
                 return view("shop.info.index",compact("results"));
           }
       }
+   //图片上传
+    public function upload(Request $request)
+    {
+        //处理上传
+        //dd($request->file("file"));
+        $file=$request->file("file");
+
+        if ($file){
+            //上传
+            $url=$file->store("menu_cate");
+            /// var_dump($url);
+            //得到真实地址  加 http的址
+//            $url=Storage::url($url);
+            $data['url']=$url;
+            return $data;
+        }
+
+    }
 }

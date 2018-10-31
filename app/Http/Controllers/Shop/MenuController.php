@@ -20,7 +20,7 @@ class MenuController extends BaseController
             $maxPrice = $request->get("maxPrice");
             $minPrice = $request->get("minPrice");
           //得到所有并分页
-            $query = Menu::orderBy("id");
+            $query = Menu::where("shop_id",Auth::user()->info->id);
           if ($categoryId!==null) {
               $query->where("category_id",$categoryId);
           }
@@ -35,7 +35,7 @@ class MenuController extends BaseController
           $menus = $query->paginate(3);
           //取得所有数据，显示视图
 //            $menus = Menu::all();
-            $results = MenuCategory::all();
+            $results = MenuCategory::where("shop_id",Auth::user()->info->id)->get();
             return view("shop.menu.index",compact('menus','results','url'));
       }
 
@@ -45,9 +45,9 @@ class MenuController extends BaseController
           if ($request->isMethod("post")) {
             //验证
              $data = $this->validate($request, [
-//                 "goods_name" => "required|unique:menus",
-//                 "goods_img" => "required|image",
-//                 "category_id" => "required"
+                 "goods_name" => "required|unique:menus",
+                 "goods_img" => "required|image",
+                 "category_id" => "required"
               ]);
 
             //接收数据，数据入库，显示视图
@@ -83,11 +83,11 @@ class MenuController extends BaseController
             $shop_id = Auth::user()->info->id;
             $data['shop_id'] = $shop_id;
           //图片入库
-//            if($request->file("goods_img")!==null){
-//                $data['goods_img']=$request->file("goods_img")->store("images");
-//            }else{
-//                $data['goods_img']=$menu->goods_img;
-//            }
+            if($request->file("goods_img")!==null){
+                $data['goods_img']=$request->file("goods_img")->store("images");
+            }else{
+                $data['goods_img']=$menu->goods_img;
+            }
             //数据入库
             if ($menu->update($data)) {
                 \Storage::delete($pic);

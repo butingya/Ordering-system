@@ -12,23 +12,31 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
 
 
 Route::domain("order.admin.com")->namespace("Admin")->group(function (){
-    //商铺申请列表
+
+    //商铺申请列表，删除，修改
     Route::any("info/list","InfoController@list")->name("admin.info.list");
     Route::get("info/del{id}","InfoController@del")->name("admin.info.del");
+    Route::any("info/edit{id}","InfoController@edit")->name("admin.info.edit");
+    //图片上传
+    Route::any("info/upload","InfoController@upload")->name("admin.info.upload");
     //店铺审核,禁用
     Route::get("info/check{id}","InfoController@check")->name("admin.info.check");
     Route::get("info/ban{id}","InfoController@ban")->name("admin.info.ban");
+    //给商家添加店铺
+    Route::any("info/shop_add/{id}","InfoController@shopAdd")->name("admin.info.shop_add");
     //商铺分类,显示，增删改查
     Route::get("category/index","ShopCategoryController@category")->name("admin.category.index");
     Route::any("category/add","ShopCategoryController@add")->name("admin.category.add");
     Route::any("category/edit{id}","ShopCategoryController@edit")->name("admin.category.edit");
     Route::get("category/del{id}","ShopCategoryController@del")->name("admin.category.del");
+    //图片自动上传
+    Route::any("category/upload","ShopCategoryController@upload")->name("admin.category.upload");
     //后台管理员
     Route::get("admin/index","AdminController@index")->name("admin.admin.index");
     Route::any("admin/add","AdminController@add")->name("admin.admin.add");
@@ -41,12 +49,11 @@ Route::domain("order.admin.com")->namespace("Admin")->group(function (){
     //给商家重置密码
     Route::any("user/rest/{id}","AdminController@rest")->name("admin.user.rest");
 
-    //商家
+    //商家，给商家添加店铺,图片自动上传
     Route::get("user/index","UserController@index")->name("admin.user.index");
     Route::any("user/add","UserController@add")->name("admin.user.add");
     Route::any("user/edit{id}","UserController@edit")->name("admin.user.edit");
     Route::get("user/del{id}","UserController@del")->name("admin.user.del");
-
     //活动
     Route::get("activity/index","ActivityController@index")->name("admin.activity.index");
     Route::any("activity/add","ActivityController@add")->name("admin.activity.add");
@@ -71,7 +78,7 @@ Route::domain("order.shop.com")->namespace("Shop")->group(function (){
     Route::any("menu/add","MenuController@add")->name("shop.menu.add");
     Route::any("menu/edit/{id}","MenuController@edit")->name("shop.menu.edit");
     Route::get("menu/del/{id}","MenuController@del")->name("shop.menu.del");
-    //自动上传
+    //图片自动上传
     Route::any("category/upload","MenuController@upload")->name("shop.category.upload");
     //菜品分类
     Route::get("category/index","MenuCategoryController@index")->name("shop.category.index");

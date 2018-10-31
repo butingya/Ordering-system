@@ -47,7 +47,7 @@
 
 
             <li class="header">LABELS</li>
-            <li><a href="{{route("shop.activity.index")}}"><i class="fa fa-circle-o text-red"></i> <span>当前有效活动</span></a></li>
+            <li><a href="{{route("shop.activity.index")}}"><i class="fa fa-circle-o text-red"></i> <span>当前活动</span></a></li>
             <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
             <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
         </ul>

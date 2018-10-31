@@ -61,7 +61,7 @@
         {{--</div>--}}
 
         <div class="form-group">
-            <label>图像</label>
+            <label>图片</label>
 
             <input type="hidden" name="goods_img" value="" id="img">
             <!--dom结构部分-->

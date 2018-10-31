@@ -23,7 +23,13 @@
                         {{--<img src="/{{$categorys->img}}" width="100">--}}
                         <img src="{{env("ALIYUN_OSS_URL").$categorys->img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
                     </td>
-                    <td>{{$categorys->status}}</td>
+                    <td>
+                        @if($categorys->status)
+                            <span>上线</span>
+                        @else
+                            <span>未启用</span>
+                        @endif
+                    </td>
 
                     <td>
                         <a href="{{route("admin.category.edit",$categorys->id)}}" class="btn btn-success">编辑</a>

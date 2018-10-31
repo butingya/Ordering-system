@@ -68,7 +68,7 @@
         <!-- Tab panes -->
         <div class="tab-content">
 
-        @include("shop.layouts._footer")
+
             <!-- Home tab content -->
             <div class="tab-pane" id="control-sidebar-home-tab">
                 <h3 class="control-sidebar-heading">Recent Activity</h3>
@@ -254,6 +254,7 @@
          immediately after the control sidebar -->
     <div class="control-sidebar-bg"></div>
 </div>
+@include("shop.layouts._footer");
 <!-- ./wrapper -->
 
 <!-- jQuery 3 -->

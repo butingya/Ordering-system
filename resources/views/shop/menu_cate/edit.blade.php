@@ -1,6 +1,6 @@
 @extends("shop.layouts.main")
 
-@section("title","添加分类")
+@section("title","修改菜品分类")
 
 @section("content")
 
@@ -24,10 +24,10 @@
         <div class="form-group">
             <label>是否默认分类</label>&emsp;
             <label class="radio-inline">
-                <input type="radio" name="is_selected" value="on" <?php if($menucategory->is_selected==1) echo 'checked' ?>> 是
+                <input type="radio" name="is_selected" value="1" <?php if($menucategory->is_selected==1) echo 'checked' ?>> 是
             </label>
             <label class="radio-inline">
-                <input type="radio" name="is_selected" value="false" <?php if($menucategory->is_selected==0) echo 'checked' ?>> 不是
+                <input type="radio" name="is_selected" value="0" <?php if($menucategory->is_selected==0) echo 'checked' ?>> 不是
             </label>
         </div>
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Info;
+use App\Models\ShopCategory;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -22,6 +23,12 @@ class UserController extends Controller
             if ($request->isMethod("post")) {
               //接收数据，数据入库，显示视图
                 $data = $request->post();
+              //验证
+                $this->validate($request, [
+                    "name" => "required|unique:users",
+                    "password" => "required",
+                    "email" => "required|unique:users"
+                ]);
               //密码加密
                 $data['password'] = bcrypt($data['password']);
                 if (User::create($data)) {
@@ -39,6 +46,11 @@ class UserController extends Controller
         //是不是post提交
         if ($request->isMethod("post")) {
             $data = $request->post();
+            //验证
+            $this->validate($request, [
+                "name" => "required|unique:users",
+                "email" => "required|unique:users"
+            ]);
             //数据入库
             if ($user->update($data)) {
                 //页面跳转
@@ -59,4 +71,53 @@ class UserController extends Controller
         });
         return redirect()->route("admin.user.index")->with("success","删除成功");
     }
+
+
+
+
+
+//    //给商家添加店铺
+//    public function shopAdd(Request $request){
+//        //判断post提交
+//        if ($request->isMethod("post")) {
+//            //接收数据,数据入库
+//            $data = $request->post();
+//            $data['on_time']=$request->has('on_time')?'1':'0';
+//            $data['brand']=$request->has('brand')?'1':'0';
+//            $data['fengniao']=$request->has('fengniao')?'1':'0';
+//            $data['bao']=$request->has('bao')?'1':'0';
+//            $data['piao']=$request->has('piao')?'1':'0';
+//            $data['zhun']=$request->has('zhun')?'1':'0';
+//
+//            //设置店铺的状态为0 未审核
+//            $data['status'] = 1;
+////            $data['user_id']=Auth::user()->id;
+//
+//            Info::create($data);
+//            //跳转视图
+//            return redirect()->route("admin.user.index")->with("success","店铺添加成功");
+//        }else{
+//            //显示视图
+//            $results = ShopCategory::where("status",1)->get();
+//            return view("admin.info.shop_add",compact("results"));
+//        }
+//    }
+//    //图片上传
+//    public function upload(Request $request)
+//    {
+//        //处理上传
+//        //dd($request->file("file"));
+//        $file=$request->file("file");
+//
+//        if ($file){
+//            //上传
+//            $url=$file->store("menu_cate");
+//            /// var_dump($url);
+//            //得到真实地址  加 http的址
+////            $url=Storage::url($url);
+//            $data['url']=$url;
+//            return $data;
+//        }
+//
+//    }
 }

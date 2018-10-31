@@ -28,8 +28,8 @@
                 <th>商家</th>
                 <th>店铺分类</th>
                 <th>店铺图片</th>
-                <th>起送金额</th>
-                <th>配送费</th>
+                {{--<th>起送金额</th>--}}
+                {{--<th>配送费</th>--}}
                 {{--<th>是否品牌联盟</th>--}}
                 {{--<th>准时送达</th>--}}
                 {{--<th>蜂鸟配送</th>--}}
@@ -52,8 +52,8 @@
                         {{--<img src="/{{$information->shop_img}}" style="width: 100px">--}}
                         <img src="{{env("ALIYUN_OSS_URL").$information->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
                     </td>
-                    <td>{{$information->start_send}}</td>
-                    <td>{{$information->send_cost}}</td>
+                    {{--<td>{{$information->start_send}}</td>--}}
+                    {{--<td>{{$information->send_cost}}</td>--}}
                     <td>
                         @if($information->status===0 )
                             <a href="{{route("admin.info.check",$information->id)}}" class="btn btn-info">审核</a>
@@ -61,6 +61,7 @@
                         @if($information->status===1 )
                             <a href="{{route("admin.info.ban",$information->id)}}" class="btn btn-danger">禁用</a>
                         @endif
+                        <a href="{{route("admin.info.edit",$information->id)}}" class="btn btn-primary">编辑</a>
                         <a href="{{route("admin.info.del",$information->id)}}" class="btn btn-warning">删除</a>
                     </td>
                 </tr>

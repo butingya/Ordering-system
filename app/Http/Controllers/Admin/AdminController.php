@@ -90,6 +90,12 @@ class AdminController extends BaseController
             if ($request->isMethod("post")) {
                 //接收数据，数据入库，显示视图
                 $data = $request->post();
+                //验证
+                $this->validate($request, [
+                    "name" => "required|unique:admins",
+                    "password" => "required",
+                    "email" => "required|unique:admins"
+                ]);
                 //密码加密
                 $data['password'] = bcrypt($data['password']);
                 if (Admin::create($data)) {
@@ -108,6 +114,12 @@ class AdminController extends BaseController
         //是不是post提交
         if ($request->isMethod("post")) {
             $data = $request->post();
+            //验证
+            $this->validate($request, [
+                "name" => "required|unique:admins",
+                "password" => "required",
+                "email" => "required|unique:admins"
+            ]);
             //数据入库
             if ($admin->update($data)) {
                 //页面跳转

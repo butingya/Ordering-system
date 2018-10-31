@@ -32,7 +32,7 @@ class ActivityController extends BaseController
         }
         //搜索标题和内容
         if ($keyword!==null) {
-            $query->where("title","like","%{$keyword}%")->where("content","like","%{$keyword}%");
+            $query->where("title","like","%{$keyword}%")->orwhere("content","like","%{$keyword}%");
         }
         $activitys = $query->paginate(3);
         return view("admin.activity.index",compact("activitys","url"));
@@ -44,6 +44,13 @@ class ActivityController extends BaseController
         if ($request->isMethod("post")) {
             //接收数据，数据入库，显示视图
             $data = $request->post();
+            //验证
+            $this->validate($request, [
+                "title" => "required|unique:activities",
+                "content" => "required|max:226",
+                "end_time" => "required",
+                "start_time" => "required",
+            ]);
             if (Activity::create($data)) {
                 return redirect()->route("admin.activity.index")->with("success","活动添加成功");
             }
@@ -66,9 +73,9 @@ class ActivityController extends BaseController
             //验证
             $da= $this->validate($request,[
                 "title"=>"required",
+                "content" => "required|max:226",
                 "start_time"=>"required",
                 "end_time"=>"required",
-                "content"=>"required"
             ]);
             $da['start_time']=str_replace("T"," ",$da['start_time']);
             $da['end_time']=str_replace("T"," ",$da['end_time']);

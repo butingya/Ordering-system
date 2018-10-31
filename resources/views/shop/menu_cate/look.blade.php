@@ -18,7 +18,7 @@
                 <tr>
                     <td>{{$list->goods_name}}</td>
                     <td>
-                        <img src="/{{$list->goods_img}}" height="100" width="150">
+                        <img src="{{env("ALIYUN_OSS_URL").$list->goods_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
                     </td>
                     <td>{{$list->goods_price}}</td>
                     <td>{{$list->month_sales}}</td>

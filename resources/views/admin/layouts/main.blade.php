@@ -17,6 +17,11 @@
     <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
     <![endif]-->
     @include('vendor.ueditor.assets')
+
+    {{--webuploader  css--}}
+
+    <link rel="stylesheet" type="text/css" href="/webuploader/webuploader.css">
+    <link rel="stylesheet" href="/css/webuploader.css">
 </head>
 <body>
 
@@ -34,7 +39,7 @@
 {{--内容--}}
 @yield("content")
     {{--引入尾部--}}
-    {{--@include("admin.layouts._footer")--}}
+    @include("admin.layouts._footer")
 </div>
 
 <!-- jQuery (Bootstrap 的所有 JavaScript 插件都依赖 jQuery，所以必须放在前边) -->
@@ -42,6 +47,7 @@
 <!-- 加载 Bootstrap 的所有 JavaScript 插件。你也可以根据需要只加载单个插件。 -->
 <script src="/bootstrap/js/bootstrap.min.js"></script>
 
+<script type="text/javascript" src="/webuploader/webuploader.js"></script>
 @yield("js")
 </body>
 </html>

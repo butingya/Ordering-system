@@ -28,6 +28,13 @@ class MenuCategoryController extends BaseController
             //接收数据，数据入库，显示视图
             $data = $request->post();
 //            dd($data);
+            //验证
+            $this->validate($request,[
+                'name'=>'required',
+                'description'=>'required',
+                'is_selected'=>'required',
+            ]);
+
             $shop_id = Auth::user()->info->id;
             $data['shop_id'] = $shop_id;
 
@@ -53,6 +60,16 @@ class MenuCategoryController extends BaseController
         if ($request->isMethod("post")) {
 
             $data = $request->post();
+
+            //验证
+            $this->validate($request,[
+                'name'=>'required',
+                'description'=>'required',
+                'is_selected'=>'required',
+            ]);
+
+            $shop_id = Auth::user()->info->id;
+            $data['shop_id'] = $shop_id;
 
             if ($request->post('is_selected')) {
                 MenuCategory::where("is_selected",1)->where('shop_id',$shop_id)->update(['is_selected'=>0]);
@@ -85,5 +102,22 @@ class MenuCategoryController extends BaseController
     public function look($id){
         $lists = DB::table("menus")->where("category_id",$id)->get();
         return view("shop.menu_cate.look",compact('lists'));
+    }
+    //图片上传
+    public function upload(Request $request)
+    {
+        //处理上传
+        //dd($request->file("file"));
+        $file=$request->file("file");
+
+        if ($file){
+            //上传
+            $url=$file->store("menu_cate");
+            /// var_dump($url);
+            //得到真实地址  加 http的址
+//            $url=Storage::url($url);
+            $data['url']=$url;
+            return $data;
+        }
     }
 }

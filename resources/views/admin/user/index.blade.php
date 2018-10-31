@@ -21,7 +21,7 @@
                     <td>
                         <a href="{{route("admin.user.edit",$user->id)}}" class="btn btn-success">编辑</a>
                         <a href="{{route("admin.user.del",$user->id)}}" class="btn btn-danger">删除</a>
-                        @if(!$user->info) <a href="{{route('shop.info.index',[$user->id])}}" class="btn btn-info">添加店铺</a> @endif
+                        @if(!$user->info) <a href="{{route("admin.info.shop_add",[$user->id])}}" class="btn btn-info">添加店铺</a> @endif
                         <a href="{{route("admin.user.rest",$user->id)}}" class="btn btn-warning">重置商家密码</a>
                     </td>
                 </tr>
