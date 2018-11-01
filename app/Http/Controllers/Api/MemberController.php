@@ -60,7 +60,7 @@ class MemberController extends Controller
             'sign_name' => '个人分享ya',
         ];
 
-//        //返回
+        //返回
         $data = [
             "status" => true,
             "message" => "获取短信验证成功".$code
@@ -116,6 +116,41 @@ class MemberController extends Controller
             ];
         }
         return $data;
+    }
+    //找回密码
+    public function rest(Request $request)
+    {
+        //接收全部数据
+        $data = $request->post();
+        //得到验证码
+        $code = Redis::get("tel_".$data['tel']);
+        //判断验证码是否有错
+        if (($code == $data['sms'])) {
+            //通过电话查询一条数据
+            $member = Member::where('tel', $data['tel'])->first();
+            //密码加密
+            $data['password'] = Hash::make($data['password']);
+            //数据入库
+            if ($member->update($data)) {
+                $data = [
+                    'status' => 'true',
+                    'message' => '密码重置成功'
+                ];
+            } else {
+                $data = [
+                    'status' => 'false',
+                    'message' => '密码重置失败'
+                ];
+            }
+            return $data;
+        }
+
+    }
+
+
+    //用户信息
+    public function detail(Request $request){
+        return Member::find($request->input('user_id'));
     }
 
 }

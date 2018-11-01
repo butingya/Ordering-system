@@ -962,3 +962,145 @@ public function sms(Request $request){
     }
 ```
 
+# Day_07
+
+## 接口开发
+
+- 用户地址管理相关接口
+- 购物车相关接口
+
+## 实现
+
+### 用户地址管理相关接口
+
+#### 地址列表
+
+```sh
+public function list(Request $request){
+        //得到当前的用户id
+        $memberId = $request->get("user_id");
+        //所有的用户地址
+        $address = Address::all();
+        return $address;
+    }
+```
+
+#### 添加地址
+
+```sh
+public function add(Request $request){
+        //接收全部数据
+        $data = $request->all();
+        //默认不选中
+        $data['is_selected'] = 0;
+        //数据入库
+        if (Address::create($data)) {
+            $data = [
+                'status' => 'true',
+                'message' => '地址添加成功'
+            ];
+        }else{
+            $data = [
+                'status' => 'false',
+                'message' => '地址添加失败'
+            ];
+        }
+        return $data;
+    }
+```
+
+#### 修改地址
+
+```sh
+public function edit(Request $request){
+        $data = $request->post();
+        //通过id查询一条数据
+        $id = request()->get('id');
+        $address = Address::find($id);
+        if ($address->update($data)) {
+            $data = [
+                'status' => 'true',
+                'message' => '地址修改成功'
+            ];
+        }else{
+            $data = [
+                'status' => 'false',
+                'message' => '地址修改失败'
+            ];
+        }
+        return $data;
+        }
+```
+
+#### 指定地址,地址回显
+
+```sh
+public function index(){
+        $id = request()->get('id');
+        $address = Address::find($id);
+        return $address;
+    }
+```
+
+### 购物车相关接口
+
+#### 购物车列表
+
+````h
+public function index(Request $request){
+        //当前用户id
+        $userId = $request->post('user_id');
+//        dd($userId);
+        //购物车列表
+        $carts = Cart::where('user_id',$userId)->get();
+        //声明一个数组
+        $goodsList = [];
+        //总价
+        $totalCost = 0;
+        //循环购物车
+        foreach ($carts as $k => $v){
+            $goods = Menu::where('id',$v->goods_id)->first(['id as goods_id','goods_name', 'goods_img', 'goods_price']);
+
+            $goods->goods_img = env("ALIYUN_OSS_URL").$goods->goods_img;
+//            dd($good->img);
+            $goods->amount = $v->goods_list;
+            //算总价
+            $totalCost += $goods->amount * $goods->goods_price;
+            $goodsList[] = $goods;
+        }
+//        dd($goodsList);
+        $data =  [
+            'goods_list' => $goodsList,
+            'totalCost' => $totalCost
+        ];
+
+        return $data;
+
+    }
+````
+
+#### 添加到购物车
+
+```sh
+public function add(Request $request){
+        //bug 会出现多个值，不是当前的选中的
+        Cart::where("user_id", $request->post('user_id'))->delete();
+        //接收参数
+        $goods = $request->post('goodsList');
+        $counts = $request->post('goodsCount');
+
+        foreach ($goods as $k => $good) {
+            $data = [
+                'user_id' => $request->post('user_id'),
+                'goods_id' => $good,
+                'goods_list' => $counts[$k]
+            ];
+            Cart::create($data);
+        }
+        return [
+            'status' => "true",
+            'message' => "添加成功"
+        ];
+    }
+```
+
