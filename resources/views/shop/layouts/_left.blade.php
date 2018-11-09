@@ -32,14 +32,26 @@
 
             <li class="treeview">
                 <a href="#">
-                    <i class="fa fa-dashboard"></i> <span>菜品分类</span>
+                    <i class="fa fa-dashboard"></i> <span>销量</span>
                     <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a href=""><i class="fa fa-circle-o"></i> 佛系养生之早餐</a></li>
-                    <li><a href=""><i class="fa fa-circle-o"></i> 佛系养生之早餐</a></li>
+                    <li><a href="{{route("shop.order.day")}}"><i class="fa fa-circle-o"></i> 订单量</a></li>
+                </ul>
+            </li>
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-dashboard"></i> <span>活动</span>
+                    <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="{{route("shop.activity.index")}}"><i class="fa fa-circle-o"></i> 最近活动</a></li>
+                    <li><a href="{{route("shop.event.index")}}"><i class="fa fa-circle-o"></i> 锦鲤活动</a></li>
                 </ul>
             </li>
 

@@ -75,7 +75,7 @@
                     <!--用来存放item-->
                     <div id="fileList" class="uploader-list"></div>
                     <div id="filePicker">选择图片</div>
-                    <img src="{{env("ALIYUN_OSS_URL").$menu->goods_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
+                    <img src="{{$menu->goods_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
                 </div>
             </div>
 

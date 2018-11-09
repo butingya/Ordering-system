@@ -50,7 +50,9 @@
                     </td>
                     <td>
                         {{--<img src="/{{$information->shop_img}}" style="width: 100px">--}}
-                        <img src="{{env("ALIYUN_OSS_URL").$information->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
+                        {{--<img src="{{env("ALIYUN_OSS_URL").$information->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">--}}
+                        {{--<img src="{{env("ALIYUN_OSS_URL").$information->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">--}}
+                        <img src="{{$information->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
                     </td>
                     {{--<td>{{$information->start_send}}</td>--}}
                     {{--<td>{{$information->send_cost}}</td>--}}

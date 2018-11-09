@@ -26,6 +26,19 @@ class InfoController extends BaseController
         $info = Info::find($id);
         $info->status = 1;
         $info->save();
+
+//        $user = User::where('id',$info->user_id)->first();
+
+        $shopName=$info->user->name;
+        $to = $info->user->email;//收件人
+        $subject = $shopName.' 审核通知';//邮件标题
+        \Illuminate\Support\Facades\Mail::send(
+            'emails.shop',//视图
+            compact("shopName"),//传递给视图的参数
+            function ($message) use($to, $subject) {
+                $message->to($to)->subject($subject);
+            }
+        );
         return back()->with("success", "审核通过");
     }
 
@@ -56,21 +69,19 @@ class InfoController extends BaseController
             //验证
             $this->validate($request, [
                 "shop_category_id" => "required",
-                "shop_name" => "required|unique:infos",
                 "shop_img" => "required",
                 "notice" => "required",
                 "discount" => "required",
-                "status" => "required",
                 "start_send" => "required",
                 "send_cost" => "required",
             ]);
 
             //图片判断
-            if($request->file("shop_img")!==null){
-                $data['shop_img']=$request->file("shop_img")->store("images");
-            }else{
-                $data['shop_img']=$info->img;
-            }
+//            if($request->file("shop_img")!==null){
+//                $data['shop_img']=$request->file("shop_img")->store("images");
+//            }else{
+//                $data['shop_img']=$info->img;
+//            }
             //数据入库
             if ($info->update($data)) {
                 \Storage::delete($pic);

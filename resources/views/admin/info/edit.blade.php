@@ -24,13 +24,14 @@
 
         <div class="form-group">
             <label>店铺图片</label>
-            <input type="hidden" name="shop_img" id="img">
+            <input type="text" name="shop_img" id="img">
             <!--dom结构部分-->
             <div id="uploader-demo">
                 <!--用来存放item-->
                 <div id="fileList" class="uploader-list"></div>
                 <div id="filePicker">选择图片</div>
-                <img src="{{env("ALIYUN_OSS_URL").$info->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
+                {{--<img src="{{env("ALIYUN_OSS_URL").$info->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">--}}
+                <img src="{{$info->shop_img}}?x-oss-process=image/resize,m_fill,w_150,h_100">
             </div>
         </div>
 
@@ -119,7 +120,7 @@
                 swf: '/webuploader/Uploader.swf',
 
                 // 文件接收服务端。
-                server: '{{route("shop.info.upload")}}',
+                server: '{{route("admin.info.upload")}}',
 
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.

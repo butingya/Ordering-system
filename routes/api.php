@@ -45,3 +45,11 @@ Route::any("address/edit","Api\AddressController@edit");
 Route::any("cart/index","Api\CartController@index");
 //添加购物车
 Route::any("cart/add","Api\CartController@add");
+//添加订单
+Route::any("order/add","Api\OrderController@add");
+//显示订单
+Route::get("order/detail","Api\OrderController@detail");
+//支付
+Route::post("order/pay","Api\OrderController@pay");
+//指定订单接口
+Route::get("order/list","Api\OrderController@list");

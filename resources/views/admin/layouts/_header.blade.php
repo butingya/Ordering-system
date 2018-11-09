@@ -14,6 +14,20 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
+                @foreach(\App\Models\Nav::where("pid",0)->get() as $k1=>$v1)
+
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
+                           aria-expanded="false">{{$v1->name}} <spa class="caret"></spa></a>
+                        <ul class="dropdown-menu">
+
+                            @foreach(\App\Models\Nav::where("pid",$v1->id)->get() as $k2=>$v2)
+                                <li><a href="{{route($v2->url)}}">{{$v2->name}}</a></li>
+                            @endforeach
+                        </ul>
+                    </li>
+                @endforeach
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">店铺管理<span class="caret"></span></a>
                     <ul class="dropdown-menu">
@@ -22,22 +36,38 @@
                         <li><a href="{{route("admin.category.index")}}">店铺分类</a></li>
                     </ul>
                 </li>
+
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">人员管理<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="{{route("admin.admin.index")}}">管理员管理</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{route("admin.user.index")}}">商家管理</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{route("admin.member.index")}}">会员管理</a></li>
                     </ul>
                 </li>
+
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">活动管理<span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">活动<span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="{{route("admin.activity.index")}}">活动管理</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="#">xxx</a></li>
                     </ul>
                 </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">销量<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{route("admin.order.day")}}">商家日订单量</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{route("admin.order.month")}}">商家月订单量</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{route("admin.order.total")}}">商家订单量</a></li>
+                    </ul>
+                </li>
+
             </ul>
 
 
@@ -61,7 +91,7 @@
                 @endauth
 
                 @guest("admin")
-                    <li><a href="">登录</a></li>
+                    <li><a href="{{route('admin.admin.login')}}">登录</a></li>
                 @endguest
             </ul>
         </div><!-- /.navbar-collapse -->

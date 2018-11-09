@@ -18,6 +18,13 @@
                 <input type="email" class="form-control" name="email" value="{{old("email",$admin->email)}}">
             </div>
 
+            <div class="form-group">
+                <label>角色</label>
+                @foreach($roles as $role)
+                    <input type="checkbox" name="role[]" value="{{$role->id}}" {{in_array($role->name,$ro)?"checked":''}}>{{$role->name}}
+                @endforeach
+            </div>
+
             <button type="submit" class="btn btn-default">确认修改</button>
         </form>
     </div>

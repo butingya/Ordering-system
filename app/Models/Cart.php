@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cart extends Model
 {
     protected $fillable = [
-        'user_id','goods_id','goods_list','amount'
+        'user_id','goods_id','amount'
     ];
 
     //购物车订单和用户的关系

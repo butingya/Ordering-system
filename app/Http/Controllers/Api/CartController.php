@@ -24,9 +24,9 @@ class CartController extends Controller
         foreach ($carts as $k => $v){
             $goods = Menu::where('id',$v->goods_id)->first(['id as goods_id','goods_name', 'goods_img', 'goods_price']);
 
-            $goods->goods_img = env("ALIYUN_OSS_URL").$goods->goods_img;
+//            $goods->goods_img = env("ALIYUN_OSS_URL").$goods->goods_img;
 //            dd($good->img);
-            $goods->amount = $v->goods_list;
+            $goods->amount = $v->amount;
             //算总价
             $totalCost += $goods->amount * $goods->goods_price;
             $goodsList[] = $goods;
@@ -53,7 +53,7 @@ class CartController extends Controller
             $data = [
                 'user_id' => $request->post('user_id'),
                 'goods_id' => $good,
-                'goods_list' => $counts[$k]
+                'amount' => $counts[$k]
             ];
             Cart::create($data);
         }

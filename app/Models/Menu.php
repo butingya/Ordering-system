@@ -13,6 +13,11 @@ class Menu extends Model
         'satisfy_rate','goods_img','status'
     ];
 
+    public function getGoodsImgAttribute($value){
+        return env("ALIYUN_OSS_URL").$value;
+    }
+
+
     //菜品和店铺的关系
     public function info(){
         return $this->belongsTo(Info::class,"shop_id");

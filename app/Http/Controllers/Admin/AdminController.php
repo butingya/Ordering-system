@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\Admin;
+use App\Models\Role;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,13 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminController extends BaseController
 {
+
+    //后台首页
+    public function homePage(){
+        return view("admin.admin.home_page");
+    }
+
+
 
     //管理员登录
       public function login(Request $request){
@@ -26,7 +34,7 @@ class AdminController extends BaseController
              if (Auth::guard("admin")->attempt($data,$request->has("remember"))) {
 
                 //成功
-                 return redirect()->intended(route("admin.admin.index"))->with("success","登录成功");
+                 return redirect()->intended(route("admin.admin.home_page"))->with("success","登录成功");
                }else{
                   return redirect()->back()->withInput()->with("danger","账号密码错误");
               }
@@ -98,38 +106,45 @@ class AdminController extends BaseController
                 ]);
                 //密码加密
                 $data['password'] = bcrypt($data['password']);
-                if (Admin::create($data)) {
-                    return redirect()->route("admin.user.index")->with("success","管理员加成功");
+                $admin = Admin::create($data);
+                    //给用户添加角色
+                    $admin->syncRoles($request->post('role'));
+                    return redirect()->route("admin.admin.index")->with("success","管理员加成功");
                 }
-            }else{
+
+                //得到所有角色
+                $roles = Role::all();
                 //显示视图
-                return view("admin.user.add");
-            }
+                return view("admin.admin.add",compact("roles"));
+
         }
 
     //编辑管理员资料
     public function edit(Request $request,$id){
         //通过id找对象
         $admin = Admin::find($id);
+        $ro = $admin->getRoleNames()->toArray();
         //是不是post提交
         if ($request->isMethod("post")) {
             $data = $request->post();
             //验证
             $this->validate($request, [
                 "name" => "required|unique:admins",
-                "password" => "required",
                 "email" => "required|unique:admins"
             ]);
-            //数据入库
-            if ($admin->update($data)) {
+                //数据入库
+                $admin->update($data);
+                //给用户添加角色
+                $admin->syncRoles($request->post('role'));
                 //页面跳转
                 return redirect()->route("admin.admin.index")->with("success","修改成功");
             }
-        }  else{
+            //得到所有角色
+            $roles = Role::all();
             //显示视图
-            return view("admin.admin.edit",compact("admin"));
+            return view("admin.admin.edit",compact("admin","roles","ro"));
         }
-    }
+
     //删除管理员
     public function del($id){
         //通过id找到他

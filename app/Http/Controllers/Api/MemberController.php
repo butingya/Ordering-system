@@ -60,6 +60,9 @@ class MemberController extends Controller
             'sign_name' => '个人分享ya',
         ];
 
+        $sms=New AliSms();
+        $response = $sms->sendSms($tel, "SMS_149422556", ['name'=> $code], $config);
+
         //返回
         $data = [
             "status" => true,

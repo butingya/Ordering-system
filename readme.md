@@ -1104,3 +1104,534 @@ public function add(Request $request){
     }
 ```
 
+# Day_08
+
+## 任务
+
+- 订单接口(使用事务保证订单和订单商品表同时写入成功)
+- 密码修改和重置密码接口
+
+# Day_09
+
+## 任务
+
+商户端
+
+- 订单管理[订单列表,查看订单,取消订单,发货]
+- 订单量统计[按日统计,按月统计,累计]（每日、每月、总计）
+- 菜品销量统计[按日统计,按月统计,累计]（每日、每月、总计）
+
+平台
+
+- 订单量统计[按商家分别统计和整体统计]（每日、每月、总计）
+- 菜品销量统计[按商家分别统计和整体统计]（每日、每月、总计）
+- 会员管理[会员列表,查询会员,查看会员信息,禁用会员账号]
+
+# Day_10
+
+### 开发任务
+
+平台
+
+- 权限管理
+- 角色管理[添加角色时,给角色关联权限]
+- 管理员管理[添加和修改管理员时,修改管理员的角色]
+
+### 实现步骤
+
+安装 composer require spatie/laravel-permission -vvv
+
+生成数据迁移 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="migrations"
+
+> 给权限表可以加个 intro 字段
+>
+> database/migrations/2018_11_05_114747_create_permission_tables.php
+
+```
+ Schema::create($tableNames['permissions'], function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');//游标
+            $table->string('intro');//用户登录
+            $table->string('guard_name');
+            $table->timestamps();
+        });
+```
+
+执行数据迁移 php artisan migrate
+
+配置文件 php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider" --tag="config"
+
+#### Admin模型中Models/Admin.php
+
+```
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
+
+
+class Admin extends Authenticatable
+{
+    use HasRoles;
+    protected $guarded_name ='admin';//使用想用的守卫
+    //可修改的字段
+    protected $fillable=["name","email","password"];
+}
+```
+
+#### 权限Http/Controllers/Admin/PermissionController.php
+
+```
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Permission;
+
+class PermissionController extends BaseController
+{
+    //显示
+    public function index()
+    {
+        $pers = Permission::all();
+        return view("admin.per.index",compact("pers"));
+    }
+    //增加
+    public function add(Request $request)
+    {
+        //健壮性
+
+        if($request->isMethod("post")){
+            $data = $request->post();
+            $data['guard_name'] ="admin";
+            Permission::create($data);
+            //跳转回去继续添加
+            return redirect()->route("admin.per.add")->with("success","添加权限成功");
+        }
+        return view("admin.per.add");
+    }
+    //修改
+    public function edit(Request $request,$id)
+    {
+        //健壮性
+
+        //回显
+        $pers =Permission::find($id);
+        if($request->isMethod("post")){
+            $data = $request->post();
+
+            if($pers->update($data)){
+                return redirect()->route("admin.per.index")->with("success", "修改成功");
+            }
+        }
+        return view("admin.per.edit",compact('pers'));
+
+    }
+    //删除
+    public function del($id)
+    {
+        //找到一个
+        $pers = Permission::find($id);
+
+        if($pers->delete()){
+
+            return redirect()->route("admin.per.index")->with("success", "删除成功");
+        }
+
+    }
+
+
+}
+```
+
+#### 角色Http/Controllers/Admin/RoleController.php
+
+```
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+class RoleController extends BaseController
+{
+    //显示
+    public function index()
+    {
+        $roles =Role::all();
+        return view("admin.role.index",compact("roles"));
+    }
+    //增加
+    public function add(Request $request)
+    {
+        //显示出全部权限
+        $pers =Permission::all();
+        //健壮性
+        if($request->isMethod("post")){
+            //接收选中的参数
+            $data =$request->post('per');
+            //2.添加角色
+            $role =Role::create([
+                "name"=>$request->post("name"),
+                "guard_name"=>"admin"
+            ]);
+            //3.给角色同步权限
+            if($data){
+                $role->syncPermissions($data);
+            }
+            return redirect()->route("admin.role.index")->with("success","角色添加成功");
+        }
+
+        return view("admin.role.add",compact("pers"));
+    }
+
+    //修改
+    public function edit(Request $request,$id)
+    {
+        //回显
+        $roles =Role::find($id);
+        //显示出全部权限
+        $pers =Permission::all();
+        $rol =$roles->permissions()->pluck('id')->toArray();
+//        dd($rol);
+//        dd($roles->toArray());
+        if($request->isMethod("post")){
+            $data = $request->post('per');
+
+            //2.添加角色
+            $roles->update([
+                "name"=>$request->post("name"),
+                "guard_name"=>"admin"
+            ]);
+            //3.给角色同步权限
+            if($data){
+                $roles->syncPermissions($data);
+            }
+//            if($roles->update($data)){
+                return redirect()->route("admin.role.index")->with("success", "修改成功");
+//            }
+
+        }
+        return view("admin.role.edit",compact('roles','pers','rol'));
+    }
+    //删除
+    public function del($id)
+    {
+        //找到一个
+        $roles = Role::find($id);
+
+        if($roles->delete()){
+
+            return redirect()->route("admin.role.index")->with("success", "删除成功");
+        }
+
+    }
+}
+```
+
+```
+视图resources/views/admin/role/index.blade.php
+@extends("admin.layouts.main")
+@section("title","角色详情")
+
+@section("content")
+
+    <div class="container-fluid">
+        <a href="{{route("admin.role.add")}}" class="btn btn-info pull-right">增加</a>
+        <table class="table">
+            <tr>
+                <th>Id</th>
+                <th>名称</th>
+                <th>权限</th>
+                <th>操作</th>
+            </tr>
+            @foreach($roles as $role)
+                <tr>
+                    <td>{{$role->id}}</td>
+                    <td>{{$role->name}}</td>
+                    <td>{{str_replace(['[',']','"'],'', json_encode($role->permissions()->pluck('intro'),JSON_UNESCAPED_UNICODE))}}</td>
+                    <td>
+                        <a href="{{route("admin.role.edit",$role->id)}}" class="btn btn-success">编辑</a>
+                        <a href="{{route("admin.role.del",$role->id)}}" class="btn btn-info">删除</a>
+                    </td>
+                </tr>
+            @endforeach
+        </table>
+
+    </div>
+
+@endsection
+
+@extends("admin.layouts._footer")
+
+视图resources/views/admin/role/edit.blade.php
+
+@extends("admin.layouts.main")
+@section("title","角色修改")
+
+@section("content")
+
+    <form class="form-horizontal" method="post" enctype="multipart/form-data">
+        {{ csrf_field() }}
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">名字</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" placeholder="名字" name="name" value="{{old("name",$roles->name)}}" style="width: 400px;">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">权限</label>
+            <div class="col-sm-10">
+                @foreach($pers as $per)
+                    <input type="checkbox"  name="per[]" value="{{$per->id}}" {{in_array($per->id,$rol)?"checked":''}}>{{$per->intro}}
+                @endforeach
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">提交</button>
+            </div>
+        </div>
+    </form>
+
+
+@endsection
+
+@extends("admin.layouts._footer")
+```
+
+#### 平台用户的指定角色Http/Controllers/Admin/AdminController.php
+
+```
+ //增加
+    public function add(Request $request)
+    {
+        //判断是不是post
+        if($request->isMethod("post")){
+            $data = $this->validate($request,[
+                "name"=>"required|unique:admins",
+                "email"=>"required",
+                "password"=>"required",
+            ]);
+            $data = $request->post();
+            //为密码加密
+            $data['password'] = bcrypt($data['password']);
+//dd($data);
+            //创建用户
+            $admin = Admin::create($data);
+            //给用户添加角色 同步角色
+            $admin->syncRoles($request->post('role'));
+//            if(Admin::create($data)){
+                return redirect()->route("admin.ad.index")->with("success", "添加成功");
+//            }
+
+        }
+        //得到所有角色
+        $roles =Role::all();
+        return view("admin.ad.add",compact("roles"));
+
+    }
+
+    //修改
+    public function edit(Request $request,$id)
+    {
+        //找到一个
+        $admins = Admin::find($id);
+        //获得当前用户的管理权限
+        //$roles = $admins->getRoleNames(); // 返回一个集合
+        $ro = $admins->getRoleNames()->toArray();
+//        dd($ro);
+        //判断是不是post
+        if($request->isMethod("post")){
+            $this->validate($request,[
+//                "name"=>"required|unique:admins",
+                "name"=>[
+                    'required',
+                    //编辑时唯一性验证
+                    Rule::unique("admins")->ignore($id)
+                ],
+                "password"=>"required",
+            ]);
+            $data=$request->post();
+            $data['password'] = bcrypt($data['password']);
+//dd($data);
+            $admins->update($data);
+
+            //给用户修改角色 同步角色
+            $admins->syncRoles($request->post('role'));
+
+//            if($admins->update($data)){
+                return redirect()->route("admin.ad.index")->with("success", "修改成功");
+//            }
+
+        }
+        //得到所有角色
+        $roles =Role::all();
+        return view("admin.ad.edit",compact("admins","roles","ro"));
+
+    }
+```
+
+```
+视图·resources/views/admin/ad/edit.blade.php
+   <div class="form-group">
+            <label class="col-sm-2 control-label">角色</label>
+            <div class="col-sm-10">
+                @foreach($roles as $role)
+                    <input type="checkbox" name="role[]" value="{{$role->id}}" {{in_array($role->name,$ro)?"checked":''}} >{{$role->name}}
+                @endforeach
+            </div>
+        </div>
+```
+
+#### 判断权限
+
+```
+<?php
+
+namespace App\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
+class BaseController extends Controller
+{
+    public function __construct()
+    {
+        //中间件
+        $this->middleware("auth:admin",[
+            "except"=>["login","logout"]
+        ]);
+        //有没有权限
+        $this->middleware(function ($request, \Closure $next){
+
+            //如果没有权限停在这里
+            //1. 得到当前访问地址的路由
+            $route=Route::currentRouteName();
+
+            //2.白名单
+            $allow=[
+                "admin.ad.login",
+                "admin.ad.logout"
+            ];
+            //2.判断当前登录用户有没有权限
+
+            //要保证在白名单 并且 有权限 而且 Id==1
+            if (!in_array($route,$allow) &&!Auth::guard("admin")->user()->can($route) && Auth::guard("admin")->id()!=1){
+
+                    exit("123");
+//                exit(view("admin.fuck"));
+            }
+
+            return $next($request);
+
+        });
+
+    }
+}
+```
+
+#### 创建admin.fuck视图
+
+```
+ @extends("layouts.admin.default")
+
+  @section("content")
+     没有权限
+  @endsection
+```
+
+#### 其他方法
+
+```
+   //判断当前角色有没有当前权限
+   $role->hasPermissionTo('edit articles');
+   //判断当前用户有没有权限
+   $admin->hasRole('角色名')
+   //取出当前角色所拥有的所有权限
+   $role->permissions();
+   //取出当前用户所拥有的角色
+   $roles = $admin->getRoleNames(); // 返回一个集合
+```
+
+# Day_11
+
+## 开发任务
+
+### 平台
+
+- 导航菜单管理
+- 根据权限显示菜单
+- 配置RBAC权限管理
+
+### 商家
+
+- 发送邮件(商家审核通过,以及有订单产生时,给商家发送邮件提醒) 用户
+- 下单成功时,给用户发送手机短信提醒
+
+# 实现
+
+# Day_12
+
+## 开始任务
+
+### 平台
+
+- 抽奖活动管理[报名人数限制、报名时间设置、开奖时间设置]
+- 抽奖报名管理[可以查看报名的账号列表]
+- 活动奖品管理[开奖前可以给该活动添加、修改、删除奖品]
+- 开始抽奖[根据报名人数随机抽取活动奖品,将活动奖品和报名的账号随机匹配]
+- 抽奖完成时，给中奖商户发送中奖通知邮件
+
+### 商户
+
+- 抽奖活动列表
+- 报名抽奖活动
+- 查看抽奖活动结果
+
+### 数据表参考
+
+#### 抽奖活动表 events
+
+| 字段名称   | 类型    | 备注         |
+| ---------- | ------- | ------------ |
+| id         | primary | 主键         |
+| title      | string  | 名称         |
+| content    | text    | 详情         |
+| start_time | int     | 报名开始时间 |
+| end_time   | int     | 报名结束时间 |
+| prize_time | int     | 开奖时间     |
+| num        | int     | 报名人数限制 |
+| is_prize   | boolean | 是否已开奖   |
+
+#### 抽奖活动奖品表 event_prizes
+
+| 字段名称    | 类型    | 备注           |
+| ----------- | ------- | -------------- |
+| id          | primary | 主键           |
+| event_id    | int     | 活动id         |
+| name        | string  | 奖品名称       |
+| description | text    | 奖品详情       |
+| user_id     | int     | 中奖商家账号id |
+
+#### 活动报名表 event_users
+
+| 字段名称 | 类型    | 备注       |
+| -------- | ------- | ---------- |
+| id       | primary | 主键       |
+| event_id | int     | 活动id     |
+| user_id  | int     | 商家账号id |

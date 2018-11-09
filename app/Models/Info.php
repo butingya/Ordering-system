@@ -29,4 +29,16 @@ class Info extends Model
     public function menus(){
         return $this->hasMany(Menu::class,"shop_id");
     }
+    //店铺和订单的关系
+    public function orders(){
+        return $this->hasMany(Order::class,"shop_id");
+    }
+    //订单详情和店铺的关系
+    public function order_detail(){
+        return $this->hasMany(OrderDetail::class,"shop_id");
+    }
+    //拼接图片地址
+    public function getShopImgAttribute($value){
+        return env("ALIYUN_OSS_URL").$value;
+    }
 }
